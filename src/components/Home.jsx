@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import './App.css';
+import '../App.css';
 import cartImage from '../assets/cart.png';
-import addToCart, { data as cartData } from './Cart';
+import { data as cartData } from './Cart';
 
 const useShopURL = () => {
   const [data, setData] = useState(null);
@@ -10,7 +10,9 @@ const useShopURL = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('https://fakestoreapi.com/products', { mode: 'cors' })
+    fetch("https://fakestoreapi.com/products/category/women's clothing", {
+      mode: 'cors',
+    })
       .then((response) => {
         if (response.status >= 400) {
           throw new Error('server error');
@@ -61,14 +63,27 @@ export default function Home() {
         <Link to="/" className="siteName">
           Fake Store
         </Link>
-        <Link to="/">Home</Link>
         <Link to="/shop">Shop</Link>
-        <Link to="/cart">
-          <img src={cartImage} className="cart" />
+        <Link to="/cart" style={{ display: 'flex', alignItems: 'center' }}>
+          <img src={cartImage} className="cart" />{' '}
+          <span style={{ verticalAlign: 'top' }}>{cartData.length}</span>
         </Link>
       </nav>
-      <div>Welcome to Home Page!</div>
-      {loading && <div>Loading...</div>}
+      {loading && (
+        <div className="spinner">
+          <svg viewBox="25 25 50 50" className="circular">
+            <circle
+              strokeMiterlimit="10"
+              strokeWidth="3"
+              fill="none"
+              r="20"
+              cy="50"
+              cx="50"
+              className="path"
+            ></circle>
+          </svg>
+        </div>
+      )}
       {!loading && (
         <>
           <div className="slideshow">
@@ -78,7 +93,8 @@ export default function Home() {
             >
               {data &&
                 data.map((d) => (
-                  <div
+                  <Link
+                    to="/shop"
                     className="slide"
                     key={d.id}
                     style={{
@@ -87,7 +103,7 @@ export default function Home() {
                       backgroundSize: 'contain',
                       backgroundPosition: 'center',
                     }}
-                  ></div>
+                  ></Link>
                 ))}
             </div>
 
@@ -103,29 +119,6 @@ export default function Home() {
                   ></div>
                 ))}
             </div>
-          </div>
-          <div className="container">
-            {data &&
-              data.map((d) => {
-                return (
-                  <div key={d.id} className="card">
-                    <img src={d.image} alt="" />
-                    <div>
-                      <div>{d.title}</div>
-                      <div>{d.description}</div>
-                      <div>${d.price}</div>
-                    </div>
-                    <div>
-                      Add to cart{' '}
-                      <img
-                        src={cartImage}
-                        className="cart"
-                        onClick={() => addToCart({ ...d, quantity: 1 })}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
           </div>
         </>
       )}
