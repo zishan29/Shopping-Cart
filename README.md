@@ -1,3 +1,3 @@
 # Shopping Cart
 
-[Live Preview]('https://')
+[Live Preview]('https://shopping-cart-bice-sigma.vercel.app/')
